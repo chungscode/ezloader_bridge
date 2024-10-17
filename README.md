@@ -1,4 +1,4 @@
-# ezloader_bridge
+# EZLoader Bridge - The mod connecting players and modded servers!
 Bridging mod for my EZLoader software to connect to modded servers.
 
 // WARNING // This mod is in very early development!
