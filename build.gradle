@@ -24,12 +24,8 @@ loom {
     }
 }
 
-// Define a custom, resolvable configuration for shadowJar
 configurations {
-    shadowImplementation {
-        extendsFrom implementation
-        canBeResolved = true
-    }
+    shadow
 }
 
 dependencies {
@@ -39,17 +35,16 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
     implementation "org.nanohttpd:nanohttpd:2.3.1"
     implementation "com.google.code.gson:gson:2.8.8"
-    shadowImplementation "org.nanohttpd:nanohttpd:2.3.1"
-    shadowImplementation "com.google.code.gson:gson:2.8.8"
+
+    shadow "org.nanohttpd:nanohttpd:2.3.1"
+    shadow "com.google.code.gson:gson:2.8.8"
 }
 
-// Configure shadowJar task to use shadowImplementation configuration
 tasks.withType(com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
     archiveClassifier.set("")
-    configurations = [project.configurations.shadowImplementation]
+    configurations = [project.configurations.shadow]
 }
 
-// Make the shadow JAR the default artifact
 artifacts {
     archives shadowJar
 }
@@ -62,7 +57,6 @@ processResources {
     }
 }
 
-// Configure Java version directly
 java {
     withSourcesJar()
     sourceCompatibility = JavaVersion.VERSION_17
@@ -71,11 +65,10 @@ java {
 
 jar {
     from("LICENSE") {
-        rename { "${it}_${project.archivesName}" }
+        rename { "${it}_${project.archivesBaseName}" }
     }
 }
 
-// Configure maven publication without using deprecated features
 publishing {
     publications {
         create("mavenJava", MavenPublication) {
@@ -85,6 +78,5 @@ publishing {
     }
 
     repositories {
-        // Define repositories for publishing
     }
 }
