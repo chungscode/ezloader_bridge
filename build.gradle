@@ -1,0 +1,90 @@
+plugins {
+    id 'fabric-loom' version '1.7-SNAPSHOT'
+    id 'maven-publish'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+}
+
+version = project.mod_version
+group = project.maven_group
+
+repositories {
+    mavenCentral()
+    maven {
+        url "https://maven.fabricmc.net/"
+    }
+}
+
+loom {
+    splitEnvironmentSourceSets()
+
+    mods {
+        "ezloaderbridge" {
+            sourceSet sourceSets.main
+        }
+    }
+}
+
+// Define a custom, resolvable configuration for shadowJar
+configurations {
+    shadowImplementation {
+        extendsFrom implementation
+        canBeResolved = true
+    }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    implementation "org.nanohttpd:nanohttpd:2.3.1"
+    implementation "com.google.code.gson:gson:2.8.8"
+    shadowImplementation "org.nanohttpd:nanohttpd:2.3.1"
+    shadowImplementation "com.google.code.gson:gson:2.8.8"
+}
+
+// Configure shadowJar task to use shadowImplementation configuration
+tasks.withType(com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
+    archiveClassifier.set("")
+    configurations = [project.configurations.shadowImplementation]
+}
+
+// Make the shadow JAR the default artifact
+artifacts {
+    archives shadowJar
+}
+
+processResources {
+    inputs.property "version", project.version
+
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
+    }
+}
+
+// Configure Java version directly
+java {
+    withSourcesJar()
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+jar {
+    from("LICENSE") {
+        rename { "${it}_${project.archivesBaseName.get()}" }
+    }
+}
+
+// Configure maven publication without using deprecated features
+publishing {
+    publications {
+        create("mavenJava", MavenPublication) {
+            artifactId = project.archivesBaseName
+            from components.java
+        }
+    }
+
+    repositories {
+        // Define repositories for publishing
+    }
+}

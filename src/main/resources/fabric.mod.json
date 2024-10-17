@@ -1,0 +1,28 @@
+{
+	"schemaVersion": 1,
+	"id": "ezloaderbridge",
+	"version": "1.0.0",
+	"name": "EZLoader Bridge",
+	"description": "Bridge mod for EZLoader software. Allows server owners to add their modded server to the EZLoader database.",
+	"authors": [
+		"Ryan Harper"
+	],
+	"contact": {
+		"homepage": "https://ezloadermc.app",
+		"sources": "https://github.com/Ryan_Harper/ezloader_bridge"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/ezloaderbridge/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+		"com.ezloaderbridge.EZLoaderBridge"
+		]
+	},
+	"depends": {
+		"fabricloader": ">=0.14.0",
+		"minecraft": ">=1.20",
+		"java": ">=17",
+		"fabric-api": "*"
+	}
+}
